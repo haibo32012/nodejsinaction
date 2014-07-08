@@ -36,6 +36,8 @@ app.use('/api', api.auth);
 app.use(user);
 app.use(messages);
 app.use(app.router);
+app.use(routes.notfound);
+app.use(routes.error);
 
 
 // development only
@@ -55,6 +57,14 @@ app.post('/login', login.submit);
 app.get('/logout', login.logout);
 app.get('/:page?', page(Entry.count,5), entries.list);
 app.get('/api/user/:id',api.user);
+
+if(process.env.ERROR_ROUTE) {
+	app.get('dev/error', function(req,res,next) {
+		var err = new Error('database connection failed');
+		err.type = 'database';
+		next(err);
+	});
+}
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

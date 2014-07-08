@@ -50,6 +50,13 @@ User.prototype.hashPassword = function(fn) {
 	});
 };
 
+User.prototype.JSON = function( ) {
+	return  {
+		id: this.id,
+		name: this.name
+	}
+};
+
 User.getByName = function(name,fn) {
 	User.getId(name, function(err,id) {
 		if(err) return fn(err);
