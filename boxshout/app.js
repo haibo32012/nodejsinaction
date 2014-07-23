@@ -9,6 +9,7 @@ var user = require('./lib/middleware/user');
 var register = require('./routes/register');
 var login = require('./routes/login');
 var entries = require('./routes/entries');
+var api = require('./routes/api');
 var messages = require('./lib/messages');
 var validate = require('./lib/middleware/validate');
 var http = require('http');
@@ -27,6 +28,7 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 app.use(express.session());
+app.use('/api', api.auth);
 app.use(user);
 app.use(messages);
 app.use(app.router);
@@ -46,6 +48,8 @@ app.get('/logout', login.logout);
 app.get('/post', entries.form);
 app.post('/post', validate.required('entry[title]'),
 	validate.lengthAbove('entry[title]',4), entries.submit);
+app.post('/api/entry', entries.submit);
+app.get('/api/user/:id', api.user);
 //app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function(){
